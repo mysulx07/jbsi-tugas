@@ -1,4 +1,4 @@
-# Svelte 5 + vite + tailwind init
+# 
 
 
 # Svelte + Vite
