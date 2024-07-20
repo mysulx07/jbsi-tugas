@@ -1,8 +1,21 @@
 <script>
   import { Router, Route } from "svelte-routing";
+
+  import fetchData from "./lib/fetchData";
   import Nav from "./components/Nav.svelte";
 
   import Kurikulum from "./pages/kurikulum/Kurikulum.svelte";
+  import Daftar from "./pages/kurikulum/Daftar.svelte";
+  import { onMount } from "svelte";
+
+  let kurikulums;
+  let dosens;
+  onMount(async () => {
+    let data = await fetchData("GET", "/api/matakuliah/kurikulum");
+    kurikulums = data.data;
+    data = await fetchData("GET", "/api/dosen");
+    dosens = data.data;
+  });
 </script>
 
 <div>
@@ -10,9 +23,9 @@
     <Nav />
     <main class="container mx-auto p-2">
       <Route path="/">Home</Route>
-      <Route path="/kurikulum"><Kurikulum /></Route>
+      <Route path="/kurikulum"><Kurikulum {kurikulums} /></Route>
       <Route path="/kurikulum/daftar/:prodi/:tahun" let:params
-        >daftar Mata kuliah kurikulum prodi {params.prodi} tahun {params.tahun}</Route
+        ><Daftar prodi={params.prodi} tahun={params.tahun} {dosens} /></Route
       >
       <Route path="/prodi">prodi</Route>
       <Route path="/daftar">daftar</Route>

@@ -1,14 +1,10 @@
 <script>
+  // @ts-nocheck
+
   import { onMount } from "svelte";
-  import fetchData from "../../lib/fetchData";
   import { Link } from "svelte-routing";
 
-  let kurikulums = [];
-
-  onMount(async () => {
-    const data = await fetchData("GET", "/api/matakuliah/kurikulum");
-    kurikulums = data.data;
-  });
+  let { kurikulums = [] } = $props();
 </script>
 
 <div class="">
