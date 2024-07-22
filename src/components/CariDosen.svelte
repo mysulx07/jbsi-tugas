@@ -1,6 +1,21 @@
 <script>
   // @ts-nocheck
-  let { show = true, tutup = () => (show = false), nidn, cariDosen } = $props();
+  let {
+    show = true,
+    tutup = () => (show = false),
+    dosens = [],
+    setNidn,
+  } = $props();
+
+  let dosen = $state("");
+  let nama = $state("");
+
+  function cariDosen() {
+    dosen = [];
+    if (nama == "") return;
+    const rex = new RegExp(`${nama}`, "gi");
+    dosen = dosens.filter((data) => data.nama.match(rex));
+  }
 </script>
 
 {#if show}
@@ -13,10 +28,24 @@
     <div
       class="absolute m-3 rounded-2xl shadow-lg border w-full lg:w-1/2 bg-white top-[200px] p-5 flex flex-col"
     >
-      <div class="flex"></div>
       <div class="flex">
-        <input type="text" name="" bind:value={nidn} id="" />
-        <button onclick={cariDosen}>pilih</button>
+        <input
+          type="text"
+          bind:value={nama}
+          onkeyup={cariDosen}
+          class="ring-1"
+        />
+      </div>
+      <div>
+        {#each dosen as data, i}
+          <div>
+            <button
+              onclick={() => setNidn(data)}
+              class="w-full py-1 my-1 rounded-sm bg-sky-200 hover:bg-sky-500"
+              >{data.namal}</button
+            >
+          </div>
+        {/each}
       </div>
     </div>
   </div>

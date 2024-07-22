@@ -9,10 +9,10 @@
   let makuls = $state([]);
   let makul = $state([]);
   let jadwals = $state([]);
-  let nidn = $state("");
+  let no = $state("");
   let kelas = $state("");
-  let nidn1 = $state("");
-  let nidn2 = $state("");
+  let dosen1 = $state([]);
+  let dosen2 = $state([]);
 
   let { prodi, tahun, dosens } = $props();
   onMount(async () => {
@@ -22,9 +22,6 @@
   });
 
   async function getMK(cari) {
-    nidn1 = "";
-    nidn2 = "";
-    kelas = "";
     makul = makuls.find((data) => data.kodemk == cari);
     const data = await fetchData(
       "GET",
@@ -35,21 +32,25 @@
   }
 
   function cariDosen(dosen) {
-    show = !show;
-    if (dosen == 1) {
-      nidn1 = nidn;
-    } else {
-      nidn2 = nidn;
-    }
-
-    console.log(nidn);
+    no = dosen;
+    show = true;
   }
+
+  function setNidn(data) {
+    if (no == 1) {
+      dosen1 = data;
+    } else {
+      dosen2 = data;
+    }
+    show = false;
+  }
+
   function tutup() {
     if (event.target == event.currentTarget) show = false;
   }
 </script>
 
-<CariDosen {show} {tutup} {cariDosen} bind:nidn />
+<CariDosen {show} {tutup} {dosens} {setNidn} />
 
 <div class="flex">
   <div class="w-[60%]">
@@ -114,12 +115,12 @@
                 </tr>
                 <tr>
                   <td><button onclick={() => cariDosen(1)}>Dosen I</button></td>
-                  <td class="pl-2">: {nidn1}</td>
+                  <td class="pl-2">: {dosen1.namal}</td>
                 </tr>
                 <tr>
                   <td><button onclick={() => cariDosen(2)}>Dosen II</button></td
                   >
-                  <td class="pl-2">: {nidn2}</td>
+                  <td class="pl-2">: {dosen2.namal}</td>
                 </tr>
               </tbody>
             </table>
