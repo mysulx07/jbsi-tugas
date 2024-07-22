@@ -3,13 +3,16 @@
 
   import { onMount } from "svelte";
   import fetchData from "../../lib/fetchData";
+  import CariDosen from "../../components/CariDosen.svelte";
 
-  let top;
+  let show = $state(false);
   let makuls = $state([]);
   let makul = $state([]);
   let jadwals = $state([]);
   let nidn = $state("");
   let kelas = $state("");
+  let nidn1 = $state("");
+  let nidn2 = $state("");
 
   let { prodi, tahun, dosens } = $props();
   onMount(async () => {
@@ -19,22 +22,37 @@
   });
 
   async function getMK(cari) {
-    // console.log(cari);
+    nidn1 = "";
+    nidn2 = "";
+    kelas = "";
     makul = makuls.find((data) => data.kodemk == cari);
-
     const data = await fetchData(
       "GET",
       `/api/jadwal/matakuliah/${makul.kodemk}`
     );
     jadwals = data.data;
     globalThis.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }
 
-    // console.log(jadwals);
+  function cariDosen(dosen) {
+    show = !show;
+    if (dosen == 1) {
+      nidn1 = nidn;
+    } else {
+      nidn2 = nidn;
+    }
+
+    console.log(nidn);
+  }
+  function tutup() {
+    if (event.target == event.currentTarget) show = false;
   }
 </script>
 
+<CariDosen {show} {tutup} {cariDosen} bind:nidn />
+
 <div class="flex">
-  <div class="w-[60%]" bind:this={top}>
+  <div class="w-[60%]">
     Kurikulum {prodi} tahun {tahun}
     <div>
       <div class="p-2">
@@ -70,19 +88,50 @@
     </div>
   </div>
   <div class="w-[40%]">
-    <div class="">
-      <div class="">
-        {makul.namamk}
-      </div>
-      <div class="">
-        {makul.kodemk}
-      </div>
-      <div class="">
-        {makul.sks}
-      </div>
-      <div class="">
-        {makul.smtr}
-      </div>
+    <div class="border-2 p-2">
+      <div class="font-semibold text-lg">Set Pengampu Mata Kuliah</div>
+      {#if Object.keys(makul).length > 0}
+        <div>
+          <div class="font-bold">
+            {makul.namamk} ({makul.kodemk})
+          </div>
+          <div class="">
+            SKS : {makul.sks}, Semester {makul.smtr}
+          </div>
+          <div class="my-2">
+            <table>
+              <tbody>
+                <tr>
+                  <td>kelas</td>
+                  <td class="pl-2"
+                    >: <input
+                      type="text"
+                      bind:value={kelas}
+                      id=""
+                      class="ring-1 px-2 py-1 rounded-md active:ring-blue-500 outline-none"
+                    /></td
+                  >
+                </tr>
+                <tr>
+                  <td><button onclick={() => cariDosen(1)}>Dosen I</button></td>
+                  <td class="pl-2">: {nidn1}</td>
+                </tr>
+                <tr>
+                  <td><button onclick={() => cariDosen(2)}>Dosen II</button></td
+                  >
+                  <td class="pl-2">: {nidn2}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="">
+              <button
+                class=" p-2 w-full border-1 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-md hover:ring-1 text-white font-semibold"
+                >Daftar</button
+              >
+            </div>
+          </div>
+        </div>
+      {/if}
     </div>
     <div class="">
       Daftar Pengampu MK
