@@ -5,29 +5,42 @@
   import fetchData from "../../lib/fetchData";
   import CariDosen from "../../components/CariDosen.svelte";
 
+  let { prodi, tahun, dosens } = $props();
+
   let show = $state(false);
   let makuls = $state([]);
   let makul = $state([]);
   let jadwals = $state([]);
   let no = $state("");
   let kelas = $state("");
+  let semester = $state("");
   let dosen1 = $state([]);
   let dosen2 = $state([]);
 
-  let { prodi, tahun, dosens } = $props();
+  const kosong = {
+    nidn: "",
+    namal: "",
+    nama: "",
+  };
+
   onMount(async () => {
     const data = await fetchData("GET", `/api/matakuliah/${prodi}/${tahun}`);
     makuls = data.data;
-    // console.log(makul);
   });
 
   async function getMK(cari) {
+    kelas = "";
+    dosen1 = kosong;
+    dosen2 = kosong;
     makul = makuls.find((data) => data.kodemk == cari);
+
+    semester = String(makul.semester);
     const data = await fetchData(
       "GET",
       `/api/jadwal/matakuliah/${makul.kodemk}`
     );
     jadwals = data.data;
+    // console.log(jadwals);
     globalThis.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }
 
@@ -47,6 +60,39 @@
 
   function tutup() {
     if (event.target == event.currentTarget) show = false;
+  }
+
+  async function daftar() {
+    const kodemk = makul.kodemk;
+    const nidn1 = dosen1.nidn;
+    const nidn2 = dosen2.nidn;
+
+    const data = {
+      tahun: 2024,
+      kodeMk: makul.kodemk,
+      nidn1,
+      nidn2,
+      prodi,
+      kelas,
+      semester,
+    };
+    const result = await fetchData("POST", `/api/jadwal/matakuliah/`, data);
+    await getMK(kodemk);
+  }
+
+  function setMakul(dataMakul) {
+    dosen1 = dosens.find((data) => data.nidn == dataMakul.nidn1) ?? kosong;
+    dosen2 = dosens.find((data) => data.nidn == dataMakul.nidn2) ?? kosong;
+
+    semester = String(dataMakul.semester);
+    kelas = dataMakul.kelas;
+  }
+
+  async function hapus(id) {
+    console.log(id);
+    const result = await fetchData("DELETE", `/api/jadwal/`, { id });
+    console.log(result);
+    await getMK(makul.kodemk);
   }
 </script>
 
@@ -79,7 +125,7 @@
                 <td class="text-center p-2">{data.sks}</td>
                 <td class="text-center p-2">{data.smtr}</td>
                 <td class="text-center p-2">
-                  <button onclick={() => getMK(data.kodemk)}>daftar</button>
+                  <button onclick={() => getMK(data.kodemk)}>edit</button>
                 </td>
               </tr>
             {/each}
@@ -100,33 +146,80 @@
             SKS : {makul.sks}, Semester {makul.smtr}
           </div>
           <div class="my-2">
-            <table>
+            <table class="table-fixed w-full">
               <tbody>
                 <tr>
-                  <td>kelas</td>
-                  <td class="pl-2"
-                    >: <input
-                      type="text"
-                      bind:value={kelas}
-                      id=""
-                      class="ring-1 px-2 py-1 rounded-md active:ring-blue-500 outline-none"
-                    /></td
-                  >
+                  <td class="w-1/3"><b>Prodi</b></td>
+                  <td class="pl-2">: {prodi}</td>
                 </tr>
                 <tr>
-                  <td><button onclick={() => cariDosen(1)}>Dosen I</button></td>
+                  <td><b>Semester</b></td>
+                  <td class="pl-2"
+                    >:
+                    <input type="radio" bind:group={semester} value="1" />1
+                    <input type="radio" bind:group={semester} value="2" />2
+                    <input
+                      type="radio"
+                      bind:group={semester}
+                      id=""
+                      value="3"
+                    />3
+                    <input type="radio" bind:group={semester} value="4" />4
+                    <input type="radio" bind:group={semester} value="5" />5
+                    <input type="radio" bind:group={semester} value="6" />6
+                    <input
+                      type="radio"
+                      bind:group={semester}
+                      id=""
+                      value="7"
+                    />7
+                    <input
+                      type="radio"
+                      bind:group={semester}
+                      id=""
+                      value="8"
+                    />8
+                  </td>
+                </tr>
+                <tr>
+                  <td><b>Kelas</b></td>
+                  <td class="pl-2"
+                    >:
+                    <input type="radio" bind:group={kelas} value="A" />A
+                    <input type="radio" bind:group={kelas} value="B" />B
+                    <input type="radio" bind:group={kelas} value="C" />C
+                    <input type="radio" bind:group={kelas} value="D" />D
+                    <input type="radio" bind:group={kelas} value="E" />E
+                    <input type="radio" bind:group={kelas} value="F" />F
+                    <input type="radio" bind:group={kelas} value="G" />G
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <button
+                      onclick={() => cariDosen(1)}
+                      class="bg-indigo-600 w-full rounded-md hover:bg-indigo-500"
+                      ><b>Dosen I</b></button
+                    >
+                  </td>
                   <td class="pl-2">: {dosen1.namal}</td>
                 </tr>
                 <tr>
-                  <td><button onclick={() => cariDosen(2)}>Dosen II</button></td
-                  >
+                  <td>
+                    <button
+                      onclick={() => cariDosen(2)}
+                      class="bg-indigo-600 w-full rounded-md hover:bg-indigo-500"
+                      ><b>Dosen II</b></button
+                    >
+                  </td>
                   <td class="pl-2">: {dosen2.namal}</td>
                 </tr>
               </tbody>
             </table>
             <div class="">
               <button
-                class=" p-2 w-full border-1 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-md hover:ring-1 text-white font-semibold"
+                onclick={daftar}
+                class=" p-2 w-full mt-2 border-1 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-md hover:ring-1 text-white font-semibold"
                 >Daftar</button
               >
             </div>
@@ -134,12 +227,25 @@
         </div>
       {/if}
     </div>
-    <div class="">
-      Daftar Pengampu MK
+    <div>
+      <div class="font-semibold">
+        Daftar Pengampu {makul.namamk}, semester {makul.semester}, {makul.sks} SKS
+      </div>
       <div class="">
         {#each jadwals as data, i}
           <div>
-            Kelas {data.kelas} : {data.namal}
+            <button
+              onclick={() => setMakul(data)}
+              class="hover:bg-blue-400 rounded-md my-1 w-[90%] text-left py-1 px-2"
+              >Kelas {data.semester}
+              {data.kelas} : {data.namal1}
+              {data.namal2 ? ` | ${data.namal2}` : ""}
+            </button>
+            <button
+              onclick={() => hapus(data.id)}
+              class="bg-red-600 text-white py-1 px-2 rounded-md ml-1 hover:bg-red-400"
+              h>X</button
+            >
           </div>
         {/each}
       </div>

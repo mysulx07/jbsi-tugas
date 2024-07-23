@@ -27,8 +27,10 @@
       <Route path="/kurikulum/daftar/:prodi/:tahun" let:params
         ><Daftar prodi={params.prodi} tahun={params.tahun} {dosens} /></Route
       >
-      <Route path="/prodi">prodi</Route>
-      <Route path="/daftar">daftar</Route>
+      <Route path="/pbsi">PBSI</Route>
+      <Route path="/bsi">BSI</Route>
+      <Route path="/pbsd">PBSD</Route>
+      <Route path="/login">login</Route>
     </main>
   </Router>
 </div>

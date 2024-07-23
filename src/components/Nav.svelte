@@ -9,10 +9,12 @@
       <img src={Logo} alt="Logo" srcset="" class="rounded-full shadow" />
     </div>
     <nav class="flex flex-row gap-3">
-      <Link to=".">Beranda</Link>
+      <Link to=".">Ampu</Link>
+      <Link to="pbsi">PBSI</Link>
+      <Link to="bsi">BSI</Link>
+      <Link to="pbsd">PBSD</Link>
       <Link to="kurikulum">Kurikulum</Link>
-      <Link to="prodi">Prodi</Link>
-      <Link to="daftar">Daftar</Link>
+      <Link to="login">login</Link>
     </nav>
   </div>
 </div>

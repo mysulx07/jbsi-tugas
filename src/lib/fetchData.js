@@ -8,11 +8,13 @@ export default async function (method, url, data = []) {
     },
   };
 
-  if ((method = "GET")) {
+  if (method == "GET") {
     option = {
       method,
     };
   }
+
+  // console.log(option);
 
   try {
     const response = await fetch(url, option);
