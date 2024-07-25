@@ -16,6 +16,7 @@
   let semester = $state("");
   let dosen1 = $state([]);
   let dosen2 = $state([]);
+  let laporan = $state("");
 
   const kosong = {
     nidn: "",
@@ -32,9 +33,10 @@
     kelas = "";
     dosen1 = kosong;
     dosen2 = kosong;
+    laporan = "";
     makul = makuls.find((data) => data.kodemk == cari);
 
-    semester = String(makul.semester);
+    semester = String(makul.smtr);
     const data = await fetchData(
       "GET",
       `/api/jadwal/matakuliah/${makul.kodemk}`
@@ -76,8 +78,11 @@
       kelas,
       semester,
     };
+    // console.log(data);
     const result = await fetchData("POST", `/api/jadwal/matakuliah/`, data);
+    // console.log(result.data);
     await getMK(kodemk);
+    if (result.data != true) laporan = "gagal mengeksekusi data";
   }
 
   function setMakul(dataMakul) {
@@ -89,9 +94,8 @@
   }
 
   async function hapus(id) {
-    console.log(id);
+    // console.log(id);
     const result = await fetchData("DELETE", `/api/jadwal/`, { id });
-    console.log(result);
     await getMK(makul.kodemk);
   }
 </script>
@@ -222,6 +226,9 @@
                 class=" p-2 w-full mt-2 border-1 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-md hover:ring-1 text-white font-semibold"
                 >Daftar</button
               >
+            </div>
+            <div class="mt-1 text-center font- font-semibold text-slate-500">
+              {laporan}
             </div>
           </div>
         </div>

@@ -19,6 +19,7 @@ export default async function (method, url, data = []) {
   try {
     const response = await fetch(url, option);
     let data = await response.json();
+
     if (!response.ok) {
       return { status: false, error: response.status, message: data.message };
     }
