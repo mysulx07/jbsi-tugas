@@ -10,11 +10,7 @@
     </div>
     <nav class="flex flex-row gap-3">
       <Link to=".">Ampu</Link>
-      <Link to="pbsi">PBSI</Link>
-      <Link to="bsi">BSI</Link>
-      <Link to="pbsd">PBSD</Link>
       <Link to="kurikulum">Kurikulum</Link>
-      <Link to="login">login</Link>
     </nav>
   </div>
 </div>

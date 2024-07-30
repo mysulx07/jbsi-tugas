@@ -5,7 +5,7 @@ import { svelte } from "@sveltejs/vite-plugin-svelte";
 export default defineConfig({
   plugins: [svelte()],
   server: {
-    port: 3001,
+    port: 3002,
     proxy: {
       "/api": {
         target: "http://127.0.0.1:80",
@@ -13,5 +13,5 @@ export default defineConfig({
       },
     },
   },
-  base: "/ampu",
+  base: "/tugas",
 });

@@ -1,7 +1,5 @@
 <script>
   // @ts-nocheck
-
-  import { onMount } from "svelte";
   import { Link } from "svelte-routing";
 
   let { kurikulums = [] } = $props();
