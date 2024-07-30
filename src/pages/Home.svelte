@@ -9,27 +9,37 @@
   import { slide } from "svelte/transition";
   import EditMk from "../components/EditMK.svelte";
 
-  let { dosens, jadwals } = $props();
+  let { dosens } = $props();
 
   let laporan = $state("");
   let loading = $state(false);
-  let editmk = $state(false);
+  let editmk = $state(true);
+  let gantidosen;
 
   let salah = $state(false);
   let nidns = $state([]);
   let rekap = $state([]);
   let tampilMakul = $state([false]);
   let jadwal = $state([]);
+  let jadwals = $state([]);
 
   const smtr = [0, "I", "II", "III", "IV", "V", "VI", "VII", "VII"];
 
   loadJadwal();
 
   async function loadJadwal() {
-    // console.log("loading jadwal");
+    console.log("loading jadwal");
     loading = true;
     let data = [];
+    data = await fetchData("GET", "/api/jadwal");
+    if (data.status == false) {
+      salah = true;
+      laporan = "Gagal meload data jadwal";
+      console.log(laporan);
+    }
+    jadwals = data.data;
     // console.log(dosens);
+    data = [];
     dosens.forEach((row) => {
       if (row.level == 0) return false;
       rekap[String(row.nidn)] = {
@@ -65,6 +75,7 @@
     // console.log(rekap);
     editmk = false;
     loading = false;
+    console.log("jadwal selesai");
   }
 
   function setRekap(nidn, sks, makul) {
@@ -86,12 +97,24 @@
   function gantiDosen(idMakul) {
     editmk = true;
     jadwal = jadwals.find((row) => row.id == idMakul);
+    gantidosen.init();
+  }
+
+  function tutupedit() {
+    if (event.target == event.currentTarget) editmk = false;
   }
 </script>
 
 <Loading {loading} />
 <Error pesan={laporan} {salah} />
-<EditMk {jadwal} {dosens} {editmk} {loadJadwal} />
+<EditMk
+  {jadwal}
+  {dosens}
+  {editmk}
+  {loadJadwal}
+  {tutupedit}
+  bind:this={gantidosen}
+/>
 
 <div class="lg:w-[62%] w-full mx-auto">
   <div

@@ -7,7 +7,7 @@
 {#if loading}
   <main
     transition:fade
-    class="w-screen h-screen fixed top-0 left-0 bg-slate-400/20 backdrop-blur flex justify-center items-center flex-col gap-4"
+    class="w-screen h-screen fixed top-0 left-0 bg-slate-400/20 backdrop-blur flex justify-center items-center flex-col gap-4 z-30"
   >
     <div class=" text-3xl text-center">{pesan}</div>
     <div class=" text-5xl text-center flex flex-row items-center">

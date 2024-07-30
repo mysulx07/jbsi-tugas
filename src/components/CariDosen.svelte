@@ -1,11 +1,6 @@
 <script>
   // @ts-nocheck
-  let {
-    show = true,
-    tutup = () => (show = false),
-    dosens = [],
-    setNidn,
-  } = $props();
+  let { show = true, dosens = [], setNidn, tutup } = $props();
 
   let dosen = $state("");
   let nama = $state("");

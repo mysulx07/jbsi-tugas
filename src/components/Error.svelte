@@ -7,7 +7,7 @@
 {#if salah}
   <main
     transition:fade
-    class="w-screen h-screen fixed top-0 left-0 bg-red-400/50 backdrop-blur flex justify-center items-center z-10"
+    class="w-screen h-screen fixed top-0 left-0 bg-red-400/50 backdrop-blur flex justify-center items-center z-50"
   >
     <div class=" text-5xl text-center">
       {pesan}
